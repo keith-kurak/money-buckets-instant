@@ -1,23 +1,33 @@
-import { db, id } from "@/db";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { db } from "@/db";
+import { Link, Stack, useLocalSearchParams } from "expo-router";
+import { sortBy } from "lodash";
 import { useState } from "react";
-import { Button, FlatList, Text, TextInput, View } from "react-native";
+import {
+  Button,
+  FlatList,
+  Pressable,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 
 export default function Transactions() {
   const { bucketId } = useLocalSearchParams();
 
   const query = {
     buckets: {
-      $: { where: { id: bucketId as string } },
-      transactions: {},
+      $: {
+        where: { id: bucketId as string },
+      },
+      transactions: {
+
+      },
     },
   };
 
   const { data, isLoading, error } = db.useQuery(query);
 
-  console.log(data);
-
-  const myData = data?.buckets?.[0]?.transactions || [];
+  const myData = sortBy((data?.buckets?.[0]?.transactions || []), (t) => t.createdAt).reverse();
 
   return (
     <>
@@ -25,21 +35,12 @@ export default function Transactions() {
       <FlatList
         data={myData}
         renderItem={({ item }) => <TransactionView transaction={item} />}
-        ListFooterComponent={
-          <TransactionEntryView
-            onAdd={(title, amount) => {
-              const newId = id();
-              db.transact([
-                db.tx.transactions[newId].create({
-                  title,
-                  amount,
-                  date: new Date(),
-                  createdAt: new Date(),
-                }),
-                db.tx.buckets[bucketId as string].link({ transactions: newId }),
-              ]);
-            }}
-          />
+        ListHeaderComponent={
+          <Link href={`/${bucketId}/add`} asChild>
+            <Pressable className="p-4 bg-gray-200">
+              <Text className="text-lg font-bold">Add Transaction</Text>
+            </Pressable>
+          </Link>
         }
       />
     </>

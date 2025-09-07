@@ -56,7 +56,7 @@ function BucketView(props: {
   const { title, color } = props.bucket;
 
   return (
-    <Link href={`/${props.bucket.id}/transactions`} asChild>
+    <Link href={`/${props.bucket.id}`} asChild>
       <Pressable>
         <View className="p-4 border-b border-gray-200 flex-row justify-between items-center">
           <Text className="text-lg">{title}</Text>
