@@ -1,29 +1,10 @@
-import { i, init, InstaQLEntity } from '@instantdb/react-native';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { db, id } from "@/db";
+import { useState } from "react";
+import { Button, FlatList, Text, TextInput, View } from "react-native";
 
-// Visit https://instantdb.com/dash to get your APP_ID :)
-const APP_ID = 'b66af059-5a26-4ab2-9bde-879192559848';
-
-// Optional: You can declare a schema!
-const schema = i.schema({
-  entities: {
-    colors: i.entity({
-      value: i.string(),
-    }),
-  },
-});
-
-type Color = InstaQLEntity<typeof schema, 'colors'>;
-
-const db = init({ appId: APP_ID, schema });
-
-const selectId = '4d39508b-9ee2-48a3-b70d-8192d9c5a059';
-
-function App() {
-  const { isLoading, error, data } = db.useQuery({
-    colors: {
-      $: { where: { id: selectId } },
-    },
+export default function Index() {
+  const { data, isLoading, error } = db.useQuery({
+    buckets: {},
   });
   if (isLoading) {
     return (
@@ -40,59 +21,57 @@ function App() {
     );
   }
 
-  return <Main color={data.colors[0]} />;
+  return (
+    <FlatList
+      data={data.buckets}
+      renderItem={({ item }) => <BucketView bucket={item} />}
+      ListHeaderComponent={
+        <BucketEntryView
+          onAdd={(title, color) => {
+            db.transact(
+              db.tx.buckets[id()].create({ title, color, createdAt: new Date() }),
+            );
+          }}
+        />
+      }
+    />
+  );
 }
 
-function Main(props: { color?: Color }) {
-  const { value } = props.color || { value: 'lightgray' };
+function BucketView(props: { bucket: { title: string; color: string } }) {
+  const { title, color } = props.bucket;
 
   return (
-    <View style={[styles.container, { backgroundColor: value }]}>
-      <View style={[styles.contentSection]}>
-        <Text style={styles.header}>Hi! pick your favorite color</Text>
-        <View style={styles.spaceX4}>
-          {['green', 'blue', 'purple'].map((c) => {
-            return (
-              <Button
-                title={c}
-                onPress={() => {
-                  db.transact(db.tx.colors[selectId].update({ value: c }));
-                }}
-                key={c}
-              />
-            );
-          })}
-        </View>
-      </View>
+    <View className="p-4 border-b border-gray-200 flex-row justify-between items-center">
+      <Text className="text-lg">{title}</Text>
+      <View
+        className={`w-6 h-6 rounded-full`}
+        style={{ backgroundColor: color }}
+      />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  spaceY4: {
-    marginVertical: 16,
-  },
-  spaceX4: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginHorizontal: 16,
-  },
-  contentSection: {
-    backgroundColor: 'white',
-    opacity: 0.8,
-    padding: 12,
-    borderRadius: 8,
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-});
+function BucketEntryView(props: {
+  onAdd: (title: string, color: string) => void;
+}) {
+  const [title, setTitle] = useState("");
 
-export default App;
+  return (
+    <View className="p-4 border-b border-gray-200 flex-row justify-between items-center">
+      <TextInput
+        className="border border-gray-300 rounded p-2 flex-1 mr-2"
+        placeholder="New Bucket Title"
+        value={title}
+        onChangeText={setTitle}
+      />
+      <Button
+        title="Add"
+        onPress={() => {
+          props.onAdd(title, "#ff0000");
+          setTitle("");
+        }}
+      />
+    </View>
+  );
+}
