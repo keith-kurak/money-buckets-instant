@@ -1,6 +1,14 @@
 import { db, id } from "@/db";
+import { Link } from "expo-router";
 import { useState } from "react";
-import { Button, FlatList, Text, TextInput, View } from "react-native";
+import {
+  Button,
+  FlatList,
+  Pressable,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 
 export default function Index() {
   const { data, isLoading, error } = db.useQuery({
@@ -25,11 +33,15 @@ export default function Index() {
     <FlatList
       data={data.buckets}
       renderItem={({ item }) => <BucketView bucket={item} />}
-      ListHeaderComponent={
+      ListFooterComponent={
         <BucketEntryView
           onAdd={(title, color) => {
             db.transact(
-              db.tx.buckets[id()].create({ title, color, createdAt: new Date() }),
+              db.tx.buckets[id()].create({
+                title,
+                color,
+                createdAt: new Date(),
+              })
             );
           }}
         />
@@ -38,17 +50,23 @@ export default function Index() {
   );
 }
 
-function BucketView(props: { bucket: { title: string; color: string } }) {
+function BucketView(props: {
+  bucket: { title: string; color: string; id: string };
+}) {
   const { title, color } = props.bucket;
 
   return (
-    <View className="p-4 border-b border-gray-200 flex-row justify-between items-center">
-      <Text className="text-lg">{title}</Text>
-      <View
-        className={`w-6 h-6 rounded-full`}
-        style={{ backgroundColor: color }}
-      />
-    </View>
+    <Link href={`/${props.bucket.id}/transactions`} asChild>
+      <Pressable>
+        <View className="p-4 border-b border-gray-200 flex-row justify-between items-center">
+          <Text className="text-lg">{title}</Text>
+          <View
+            className={`w-6 h-6 rounded-full`}
+            style={{ backgroundColor: color }}
+          />
+        </View>
+      </Pressable>
+    </Link>
   );
 }
 

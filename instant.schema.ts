@@ -22,10 +22,9 @@ const _schema = i.schema({
   links: {
     transactionBucket: {
       forward: { on: 'transactions', has: 'one', label: 'bucket' },
-      reverse: { on: 'bucket', has: 'many', label: 'transactionBucket' },
+      reverse: { on: 'buckets', has: 'many', label: 'transactions' },
     }
-  },
-  rooms: {},
+  }
 });
 
 // This helps Typescript display nicer intellisense
