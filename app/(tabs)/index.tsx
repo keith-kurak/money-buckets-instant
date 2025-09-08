@@ -1,5 +1,7 @@
-import { db, id } from "@/db";
-import { Link } from "expo-router";
+import colors from "@/constants/colors";
+import { db } from "@/db";
+import Entypo from "@expo/vector-icons/Entypo";
+import { Link, Stack } from "expo-router";
 import { useState } from "react";
 import {
   Button,
@@ -9,8 +11,11 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Index() {
+  const { top } = useSafeAreaInsets();
+
   const { data, isLoading, error } = db.useQuery({
     buckets: {},
   });
@@ -30,23 +35,28 @@ export default function Index() {
   }
 
   return (
-    <FlatList
-      data={data.buckets}
-      renderItem={({ item }) => <BucketView bucket={item} />}
-      ListFooterComponent={
-        <BucketEntryView
-          onAdd={(title, color) => {
-            db.transact(
-              db.tx.buckets[id()].create({
-                title,
-                color,
-                createdAt: new Date(),
-              })
-            );
-          }}
-        />
-      }
-    />
+    <>
+      <Stack.Screen options={{ title: "Buckets" }} />
+      <View
+        style={{
+          height: 64,
+          paddingTop: top,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "flex-end",
+        }}
+      >
+        <Link href="/add-bucket" asChild>
+          <Pressable className="p-4">
+            <Entypo name="plus" size={24} color={colors.tint} />
+          </Pressable>
+        </Link>
+      </View>
+      <FlatList
+        data={data.buckets}
+        renderItem={({ item }) => <BucketView bucket={item} />}
+      />
+    </>
   );
 }
 

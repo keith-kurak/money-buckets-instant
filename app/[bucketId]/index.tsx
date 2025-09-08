@@ -1,15 +1,10 @@
+import { IconHeaderButton } from "@/component/IconHeaderButton";
 import { db } from "@/db";
-import { Link, Stack, useLocalSearchParams } from "expo-router";
+import classNames from "classnames";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { sortBy } from "lodash";
 import { useState } from "react";
-import {
-  Button,
-  FlatList,
-  Pressable,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { Button, FlatList, Text, TextInput, View } from "react-native";
 
 export default function Transactions() {
   const { bucketId } = useLocalSearchParams();
@@ -19,42 +14,65 @@ export default function Transactions() {
       $: {
         where: { id: bucketId as string },
       },
-      transactions: {
-
-      },
+      transactions: {},
     },
   };
 
+  const router = useRouter();
+
   const { data, isLoading, error } = db.useQuery(query);
 
-  const myData = sortBy((data?.buckets?.[0]?.transactions || []), (t) => t.createdAt).reverse();
+  const myData = sortBy(
+    data?.buckets?.[0]?.transactions || [],
+    (t) => t.createdAt
+  ).reverse();
+
+  const bucketBalance = myData.reduce((sum, t) => sum + t.amount, 0);
 
   return (
     <>
-      <Stack.Screen options={{ title: data?.buckets?.[0]?.title || "" }} />
+      <Stack.Screen
+        options={{
+          title: data?.buckets?.[0]?.title || "",
+          headerShown: true,
+          headerRight: () => (
+            <IconHeaderButton
+              icon="plus"
+              onPress={() => {
+                router.navigate(`/${bucketId}/add`);
+              }}
+            />
+          ),
+        }}
+      />
       <FlatList
         data={myData}
         renderItem={({ item }) => <TransactionView transaction={item} />}
-        ListHeaderComponent={
-          <Link href={`/${bucketId}/add`} asChild>
-            <Pressable className="p-4 bg-gray-200">
-              <Text className="text-lg font-bold">Add Transaction</Text>
-            </Pressable>
-          </Link>
-        }
+        ListHeaderComponent={() => (
+          <View className="py-8 px-4">
+            <Text className="text-2xl font-bold">
+              Balance: ${bucketBalance}
+            </Text>
+          </View>
+        )}
       />
     </>
   );
 }
 
 function TransactionView(props: {
-  transaction: { title: string; amount: number };
+  transaction: { title: string; amount: number; date: string };
 }) {
-  const { title, amount } = props.transaction;
+  const { title, amount, date } = props.transaction;
 
   return (
-    <View className="p-4 border-b border-gray-200 flex-row justify-between items-center">
-      <Text className="text-lg">{title}</Text>
+    <View className={classNames("p-4 border-b border-gray-200 flex-row justify-between items-center", amount < 0 ? "bg-red-100" : "bg-green-100")}>
+      <View>
+        <Text className="text-lg">{title}</Text>
+        <Text className="text-gray-500">
+          {new Date(date).toLocaleDateString()}
+        </Text>
+      </View>
       <Text className="text-lg">{amount}</Text>
     </View>
   );

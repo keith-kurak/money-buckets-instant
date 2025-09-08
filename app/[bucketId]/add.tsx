@@ -41,7 +41,7 @@ export default function AddTransactionScreen() {
 
   return (
     <View className="p-4 border-t border-gray-200, gap-y-4">
-      <Stack.Screen options={{ title: "Add Transaction" }} />
+      <Stack.Screen options={{ title: "Add Transaction", headerShown: true }} />
       <ExpenseOrIncomeSelector selectedType={type} onSelect={setType} />
       <TextInput
         className="border border-gray-300 rounded p-2"
@@ -57,7 +57,10 @@ export default function AddTransactionScreen() {
         value={title}
         onChangeText={setTitle}
       />
-      <Pressable className="bg-blue-500 p-2 rounded-md justify-center items-center" onPress={addTransaction}>
+      <Pressable
+        className="bg-blue-500 p-2 rounded-md justify-center items-center"
+        onPress={addTransaction}
+      >
         <Text className="text-white">Add</Text>
       </Pressable>
     </View>
