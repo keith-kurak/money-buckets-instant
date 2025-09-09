@@ -1,16 +1,6 @@
-import { Stack } from "expo-router";
-import colors from "../constants/colors";
-import "../global.css";
+import "@/global.css";
+import { Slot } from "expo-router";
 
-export default function RootLayout() {
-  return (
-    <Stack
-      screenOptions={{
-        headerStyle: { backgroundColor: colors.tint },
-        headerTintColor: colors.white,
-        headerBackButtonDisplayMode: "minimal",
-        headerShown: false,
-      }}
-    />
-  );
+export default function Layout() {
+  return <Slot />;
 }
