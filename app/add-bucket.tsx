@@ -63,7 +63,7 @@ export default function AddBucketScreen() {
             "#2196F3",
             "#009688",
             "#4CAF50",
-            "#FFEB3B",
+            "#b8ab3d", //yellow-ish
             "#FF9800",
             "#795548",
           ].map((color, idx) => (

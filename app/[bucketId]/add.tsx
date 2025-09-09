@@ -1,3 +1,4 @@
+import colors from "@/constants/colors";
 import { db, id } from "@/db";
 import classNames from "classnames";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
@@ -21,6 +22,8 @@ export default function AddTransactionScreen() {
 
   const { data, isLoading, error } = db.useQuery(query);
 
+  const bucketColor = data?.buckets?.[0]?.color || colors.tint;
+
   const addTransaction = () => {
     const newId = id();
     db.transact([
@@ -41,7 +44,7 @@ export default function AddTransactionScreen() {
 
   return (
     <View className="p-4 border-t border-gray-200, gap-y-4">
-      <Stack.Screen options={{ title: "Add Transaction", headerShown: true }} />
+      <Stack.Screen options={{ title: "Add Transaction", headerShown: true, headerStyle: { backgroundColor: bucketColor } }} />
       <ExpenseOrIncomeSelector selectedType={type} onSelect={setType} />
       <TextInput
         className="border border-gray-300 rounded p-2"
@@ -58,7 +61,8 @@ export default function AddTransactionScreen() {
         onChangeText={setTitle}
       />
       <Pressable
-        className="bg-blue-500 p-2 rounded-md justify-center items-center"
+        className=" p-2 rounded-md justify-center items-center"
+        style={{ backgroundColor: bucketColor }}
         onPress={addTransaction}
       >
         <Text className="text-white">Add</Text>
