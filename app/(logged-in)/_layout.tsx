@@ -1,10 +1,15 @@
 import colors from "@/constants/colors";
+import { db } from "@/db";
 import { Redirect, Stack } from "expo-router";
 
 export default function RootLayout() {
-  const loggedIn = false; // Replace with your actual authentication logic
+  const { isLoading, user, error } = db.useAuth();
 
-  if (!loggedIn) {
+  if (isLoading) {
+    return null;
+  }
+
+  if (!user) {
     return <Redirect href="/login" />;
   }
 

@@ -1,3 +1,4 @@
+import { db } from "@/db";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
@@ -23,8 +24,9 @@ export default function Welcome() {
       />
       <Pressable
         className="px-6 py-3 bg-tint rounded-lg shadow"
-        onPress={() => {
-          router.navigate("/login/enter-code");
+        onPress={async () => {
+          await db.auth.sendMagicCode({ email });
+          router.navigate({ pathname: "/login/enter-code", params: { email } });
         }}
       >
         <Text className="text-white text-lg">Send Code</Text>

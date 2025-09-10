@@ -8,6 +8,8 @@ export default function AddBucketScreen() {
   const [startingBalance, setStartingBalance] = useState("");
   const [selectedColor, setSelectedColor] = useState("#F44336");
 
+  const currentUser = db.useUser();
+
   const createBucket = () => {
     const bucketId = id();
     const startingBalanceTransactionId = id();
@@ -16,7 +18,7 @@ export default function AddBucketScreen() {
         title,
         color: selectedColor,
         createdAt: new Date(),
-      }),
+      }).link({ owner: currentUser.id }),
     ];
     if (startingBalance && parseFloat(startingBalance) !== 0) {
       transactions.push(

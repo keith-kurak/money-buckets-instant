@@ -23,7 +23,19 @@ const _schema = i.schema({
     transactionBucket: {
       forward: { on: 'transactions', has: 'one', label: 'bucket' },
       reverse: { on: 'buckets', has: 'many', label: 'transactions' },
-    }
+    },
+    userBuckets: {
+      forward: {
+        on: 'buckets',
+        has: 'one',
+        label: 'owner',
+      },
+      reverse: {
+        on: '$users',
+        has: 'many',
+        label: 'ownedBuckets',
+      },
+    },
   }
 });
 
