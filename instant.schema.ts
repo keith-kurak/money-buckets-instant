@@ -18,6 +18,9 @@ const _schema = i.schema({
       date: i.date(),
       createdAt: i.date(),
     }),
+    profiles: i.entity({
+      name: i.string().optional(),
+    }),
   },
   links: {
     transactionBucket: {
@@ -35,6 +38,22 @@ const _schema = i.schema({
         has: 'many',
         label: 'ownedBuckets',
       },
+    },
+    userProfiles: {
+      forward: {
+        on: 'profiles',
+        has: 'one',
+        label: 'owner',
+      },
+      reverse: {
+        on: '$users',
+        has: 'many',
+        label: 'ownedProfiles',
+      },
+    },
+    transactionProfile: {
+      forward: { on: 'transactions', has: 'one', label: 'profile' },
+      reverse: { on: 'profiles', has: 'many', label: 'transactions' },
     },
   }
 });
