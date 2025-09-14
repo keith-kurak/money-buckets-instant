@@ -21,6 +21,16 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
+        name="transactions"
+        options={{
+          title: "Transactions",
+          tabBarLabel: "Transactions",
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon type="FontAwesome6" name="money-bill-transfer" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="settings"
         options={{
           title: "Settings",
