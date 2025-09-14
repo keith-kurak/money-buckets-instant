@@ -1,4 +1,5 @@
 import colors from "@/constants/colors";
+import { db } from "@/db";
 import { Text, View } from "react-native";
 
 export default function Settings() {
@@ -21,7 +22,7 @@ export default function Settings() {
             textAlign: "center",
           }}
           onPress={() => {
-            // TODO: Implement logout logic here
+            db.auth.signOut();
           }}
         >
           Logout
