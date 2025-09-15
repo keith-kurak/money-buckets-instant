@@ -1,48 +1,117 @@
-import colors from "@/constants/colors";
+import { EnterTextModal } from "@/component/EnterTextModal";
 import { db } from "@/db";
-import { Pressable, Text, View } from "react-native";
+import { useCurrentGroupQuery, useCurrentProfileQuery } from "@/db/queries";
+import { useState } from "react";
+import {
+  FlatList,
+  Pressable,
+  Text,
+  View
+} from "react-native";
 
 export default function Settings() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center", padding: 24 }}>
-      <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 16 }}>Money Buckets</Text>
-      <Text style={{ fontSize: 16, textAlign: "center", marginBottom: 32 }}>
-        Money Buckets helps you manage your finances easily and instantly. Version 1.0.0.
-      </Text>
-      <View>
-        <Text className="text-lg font-bold mb-2">Set a profile name</Text>
-        <Text className="text-gray-600 mb-4">
-          A profile name can be used to identify different devices entering transactions
-        </Text>
-        <View className="flex-row gap-x-2">
-          <Pressable
-            onPress={() => {
+  const { isLoading, group, error } = useCurrentGroupQuery();
 
-            }}
-          >
-            <Text>Save</Text>
-          </Pressable>
+  const { profile } = useCurrentProfileQuery();
+
+  const [isEditGroupNameDialogVisible, setIsEditGroupNameDialogVisible] =
+    useState(false);
+
+  if (isLoading) {
+    return (
+      <View>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+  if (error) {
+    return (
+      <View>
+        <Text>Error: {error.message}</Text>
+      </View>
+    );
+  }
+
+  const options = [
+    <PressableOptionCell
+      key="groupName"
+      title={group?.title || "No Group"}
+      subheading="Budget name"
+      onPress={() => {}}
+      icon="edit"
+    />,
+    <PressableOptionCell
+      key="profile"
+      title={profile?.name || "No profile selected"}
+      subheading="Current profile"
+      onPress={() => {}}
+      icon="edit"
+    />,
+    <PressableOptionCell
+      key="editProfiles"
+      title="Edit Profiles"
+      subheading="Add or change profiles"
+      onPress={() => {}}
+      icon="chevron"
+    />,
+    <PressableOptionCell
+      key="logout"
+      title="Log Out"
+      subheading=""
+      onPress={() => {
+        db.auth.signOut();
+      }}
+      icon="chevron"
+    />
+  ];
+  return (
+    <View className="flex-1">
+      <FlatList data={options} renderItem={({ item }) => item} />
+      <EnterTextModal
+        visible={isEditGroupNameDialogVisible}
+        title="Edit Group Name"
+        placeholder="Group Name"
+        initialValue={group?.title || ""}
+        onCancel={() => setIsEditGroupNameDialogVisible(false)}
+        onSubmit={(value) => {
+          // Update group name in the database
+          db.tx.groups.update(group.id, { title: value });
+          setIsEditGroupNameDialogVisible(false);
+        }}
+      />
+    </View>
+  );
+}
+
+function OptionsCell(props: {
+  children: React.ReactNode;
+  onPress?: () => void;
+}) {
+  return (
+    <Pressable onPress={props.onPress || (() => void 0)} className="p-4">
+      {props.children}
+    </Pressable>
+  );
+}
+
+function PressableOptionCell(props: {
+  title: string;
+  subheading: string;
+  onPress: () => void;
+  icon: "edit" | "chevron";
+}) {
+  return (
+    <Pressable onPress={props.onPress} className="p-4">
+      <View className="flex-row justify-between items-center">
+        <View>
+          <Text className="text-lg font-bold">{props.title}</Text>
+          <Text className="text-sm text-gray-500">{props.subheading}</Text>
+        </View>
+        <View>
+          {props.icon === "edit" && <Text className="text-lg">✏️</Text>}
+          {props.icon === "chevron" && <Text className="text-lg">➡️</Text>}
         </View>
       </View>
-      <View style={{ width: "100%", alignItems: "center" }}>
-        <Text
-          style={{
-            backgroundColor: colors.tint,
-            color: "#fff",
-            paddingVertical: 12,
-            paddingHorizontal: 32,
-            borderRadius: 8,
-            fontSize: 16,
-            fontWeight: "bold",
-            textAlign: "center",
-          }}
-          onPress={() => {
-            db.auth.signOut();
-          }}
-        >
-          Logout
-        </Text>
-      </View>
-    </View>
+    </Pressable>
   );
 }
