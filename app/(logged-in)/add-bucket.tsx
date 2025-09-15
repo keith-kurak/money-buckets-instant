@@ -1,4 +1,4 @@
-import { db, id } from "@/db";
+import { useCreateBucketMutation } from "@/db/mutations";
 import { router, Stack } from "expo-router";
 import { useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
@@ -7,35 +7,14 @@ export default function AddBucketScreen() {
   const [title, setTitle] = useState("");
   const [startingBalance, setStartingBalance] = useState("");
   const [selectedColor, setSelectedColor] = useState("#F44336");
+  const { createBucket } = useCreateBucketMutation();
 
-  const currentUser = db.useUser();
-
-  const createBucket = () => {
-    const bucketId = id();
-    const startingBalanceTransactionId = id();
-    const transactions: any = [
-      db.tx.buckets[bucketId].create({
-        title,
-        color: selectedColor,
-        createdAt: new Date(),
-      }).link({ owner: currentUser.id }),
-    ];
-    if (startingBalance && parseFloat(startingBalance) !== 0) {
-      transactions.push(
-        db.tx.transactions[startingBalanceTransactionId].create({
-          title: "Starting Balance",
-          amount: parseFloat(startingBalance),
-          date: new Date(),
-          createdAt: new Date(),
-        })
-      );
-      transactions.push(
-        db.tx.buckets[bucketId].link({
-          transactions: startingBalanceTransactionId,
-        })
-      );
-    }
-    db.transact(transactions);
+  const myCreateBucket = () => {
+    createBucket(
+      title,
+      selectedColor,
+      startingBalance ? parseFloat(startingBalance) : undefined
+    );
     router.back();
   };
 
@@ -88,7 +67,7 @@ export default function AddBucketScreen() {
         </View>
         <Pressable
           className="bg-blue-500 p-2 rounded-md justify-center items-center mt-4"
-          onPress={createBucket}
+          onPress={myCreateBucket}
         >
           <Text className="text-white">Create Bucket</Text>
         </Pressable>

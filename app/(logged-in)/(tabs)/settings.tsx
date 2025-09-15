@@ -1,13 +1,8 @@
 import colors from "@/constants/colors";
-import { db, id } from "@/db";
-import { useUserProfile } from "@/db/local";
-import { useState } from "react";
-import { Pressable, Text, TextInput, View } from "react-native";
+import { db } from "@/db";
+import { Pressable, Text, View } from "react-native";
 
 export default function Settings() {
-  const { profile, saveProfile } = useUserProfile();
-  const [profileName, setProfileName] = useState(profile?.name || "");
-
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center", padding: 24 }}>
       <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 16 }}>Money Buckets</Text>
@@ -20,19 +15,9 @@ export default function Settings() {
           A profile name can be used to identify different devices entering transactions
         </Text>
         <View className="flex-row gap-x-2">
-          <TextInput
-            className="border border-gray-300 rounded p-2 flex-1"
-            placeholder="Enter profile name"
-            value={profileName}
-            onChangeText={(text) => {
-              setProfileName(text);
-            }}
-          />
           <Pressable
             onPress={() => {
-              const newId = id();
-              db.tx.profiles[newId].create({ name: profileName }).link({ owner: db.useUser().id });
-              saveProfile({ name: profileName, id: newId });
+
             }}
           >
             <Text>Save</Text>
