@@ -7,6 +7,9 @@ const _schema = i.schema({
     $users: i.entity({
       email: i.string().unique().indexed().optional(),
     }),
+    groups: i.entity({
+      title: i.string(),
+    }),
     buckets: i.entity({
       title: i.string(),
       color: i.string(),
@@ -20,35 +23,40 @@ const _schema = i.schema({
     }),
     profiles: i.entity({
       name: i.string().optional(),
+      permissions: i.string().optional(),
     }),
   },
   links: {
+    bucketGroup: {
+      forward: { on: 'buckets', has: 'one', label: 'group' },
+      reverse: { on: 'groups', has: 'many', label: 'buckets' },
+    },
     transactionBucket: {
       forward: { on: 'transactions', has: 'one', label: 'bucket' },
       reverse: { on: 'buckets', has: 'many', label: 'transactions' },
     },
-    userBuckets: {
+    userGroups: {
       forward: {
-        on: 'buckets',
+        on: 'groups',
         has: 'one',
         label: 'owner',
       },
       reverse: {
         on: '$users',
         has: 'many',
-        label: 'ownedBuckets',
+        label: 'ownedGroups',
       },
     },
-    userProfiles: {
+    groupProfiles: {
       forward: {
         on: 'profiles',
         has: 'one',
-        label: 'owner',
+        label: 'group',
       },
       reverse: {
-        on: '$users',
+        on: 'groups',
         has: 'many',
-        label: 'ownedProfiles',
+        label: 'profiles',
       },
     },
     transactionProfile: {

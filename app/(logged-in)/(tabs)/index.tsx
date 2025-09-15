@@ -1,5 +1,5 @@
 import colors from "@/constants/colors";
-import { db } from "@/db";
+import { useBucketsQuery } from "@/db/queries";
 import { amountsToBalance, formatCurrency } from "@/lib/utils";
 import Entypo from "@expo/vector-icons/Entypo";
 import { Link, Stack } from "expo-router";
@@ -14,11 +14,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 export default function Index() {
   const { top } = useSafeAreaInsets();
 
-  const { data, isLoading, error } = db.useQuery({
-    buckets: {
-      transactions: {}
-    },
-  });
+  const { data, isLoading, error } = useBucketsQuery();
+
   if (isLoading) {
     return (
       <View>
@@ -53,7 +50,7 @@ export default function Index() {
         </Link>
       </View>
       <FlatList
-        data={data.buckets}
+        data={data?.buckets || []}
         renderItem={({ item }) => <BucketView bucket={item} balance={amountsToBalance(item.transactions)} />}
       />
     </>
