@@ -1,13 +1,9 @@
 import { EnterTextModal } from "@/component/EnterTextModal";
 import { db } from "@/db";
 import { useCurrentGroupQuery, useCurrentProfileQuery } from "@/db/queries";
+import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import {
-  FlatList,
-  Pressable,
-  Text,
-  View
-} from "react-native";
+import { Pressable, SectionList, Text, View } from "react-native";
 
 export default function Settings() {
   const { isLoading, group, error } = useCurrentGroupQuery();
@@ -32,7 +28,7 @@ export default function Settings() {
     );
   }
 
-  const options = [
+  /*const options = [
     <PressableOptionCell
       key="groupName"
       title={group?.title || "No Group"}
@@ -63,10 +59,65 @@ export default function Settings() {
       }}
       icon="chevron"
     />
+  ];*/
+  const sections = [
+    {
+      title: "Budget Settings",
+      data: [
+        <LabelValueCell
+          key="groupName"
+          label="Budget Name"
+          value={group?.title || "No Group"}
+          onPress={() => {}}
+        />,
+      ],
+    },
+    {
+      title: "Profiles",
+      data: [
+        <LabelValueCell
+          key="profile"
+          label="Current Profile"
+          value={profile?.name || "No profile selected"}
+          onPress={() => {}}
+        />,
+        <PressableOptionCell
+          key="editProfiles"
+          title="Edit Profiles"
+          subheading=""
+          onPress={() => {}}
+          icon="chevron"
+        />,
+      ],
+    },
+    {
+      title: "",
+      data: [
+        <PressableCentered
+          key="logout"
+          title="Log Out"
+          onPress={() => {
+            db.auth.signOut();
+          }}
+          color="red"
+        />,
+      ],
+    },
   ];
   return (
-    <View className="flex-1">
-      <FlatList data={options} renderItem={({ item }) => item} />
+    <View className="flex-1 bg-gray-200">
+      <SectionList
+        sections={sections}
+        SectionSeparatorComponent={() => <View className="h-1 bg-transparent" />}
+        ItemSeparatorComponent={() => <View className="h-0.5 bg-gray-200" />}
+        renderSectionHeader={({ section: { title } }) => (
+          <View className="px-4 py-2">
+            <Text className="text-gray-500">{title}</Text>
+          </View>
+        )}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => item}
+      />
       <EnterTextModal
         visible={isEditGroupNameDialogVisible}
         title="Edit Group Name"
@@ -83,17 +134,6 @@ export default function Settings() {
   );
 }
 
-function OptionsCell(props: {
-  children: React.ReactNode;
-  onPress?: () => void;
-}) {
-  return (
-    <Pressable onPress={props.onPress || (() => void 0)} className="p-4">
-      {props.children}
-    </Pressable>
-  );
-}
-
 function PressableOptionCell(props: {
   title: string;
   subheading: string;
@@ -101,17 +141,49 @@ function PressableOptionCell(props: {
   icon: "edit" | "chevron";
 }) {
   return (
-    <Pressable onPress={props.onPress} className="p-4">
+    <Pressable onPress={props.onPress} className="p-4 bg-white">
       <View className="flex-row justify-between items-center">
         <View>
-          <Text className="text-lg font-bold">{props.title}</Text>
+          <Text className="text-lg">{props.title}</Text>
           <Text className="text-sm text-gray-500">{props.subheading}</Text>
         </View>
         <View>
           {props.icon === "edit" && <Text className="text-lg">✏️</Text>}
-          {props.icon === "chevron" && <Text className="text-lg">➡️</Text>}
+          {props.icon === "chevron" && <Ionicons name="chevron-forward" size={20} color="gray" />}
         </View>
       </View>
+    </Pressable>
+  );
+}
+
+function PressableCentered(props: {
+  title: string;
+  onPress: () => void;
+  color: string;
+}) {
+  return (
+    <Pressable onPress={props.onPress} className="p-4 bg-white">
+      <View className="flex-row justify-center items-center">
+        <View>
+          <Text style={{ color: props.color }} className="text-lg">{props.title}</Text>
+        </View>
+      </View>
+    </Pressable>
+  );
+}
+
+function LabelValueCell(props: {
+  label: string;
+  value: string;
+  onPress?: () => void;
+}) {
+  return (
+    <Pressable
+      onPress={props.onPress}
+      className="p-4 flex-row justify-between items-center bg-white"
+    >
+      <Text className="text-lg color-gray-500">{props.label}</Text>
+      <Text className="text-lg">{props.value}</Text>
     </Pressable>
   );
 }
