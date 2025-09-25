@@ -58,3 +58,31 @@ export const useCreateGroupMutation = () => {
 
   return { createGroup };
 };
+
+export const useCreateProfileMutation = () => {
+  const currentGroupId = useLocalContext().currentGroupId;
+
+  const createProfile = (name: string) => {
+    const profileId = id();
+    db.transact([
+      db.tx.profiles[profileId].create({
+        name,
+      }),
+      db.tx.profiles[profileId].link({ group: currentGroupId }),
+    ]);
+  };
+
+  return { createProfile };
+};
+
+export const useUpdateProfileMutation = () => {
+  const updateProfile = (profileId: string, name: string) => {
+    db.transact([
+      db.tx.profiles[profileId].update({
+        name,
+      }),
+    ]);
+  };
+
+  return { updateProfile };
+}

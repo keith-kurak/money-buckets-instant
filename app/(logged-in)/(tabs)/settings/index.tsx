@@ -1,12 +1,15 @@
-import { EnterTextModal } from "@/component/EnterTextModal";
+import { EnterTextModal } from "@/components/EnterTextModal";
 import { db } from "@/db";
 import { useCurrentGroupQuery, useCurrentProfileQuery } from "@/db/queries";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Pressable, SectionList, Text, View } from "react-native";
 
 export default function Settings() {
   const { isLoading, group, error } = useCurrentGroupQuery();
+
+  const router = useRouter();
 
   const { profile } = useCurrentProfileQuery();
 
@@ -85,7 +88,9 @@ export default function Settings() {
           key="editProfiles"
           title="Edit Profiles"
           subheading=""
-          onPress={() => {}}
+          onPress={() => {
+            router.push("/(logged-in)/(tabs)/settings/profiles");
+          }}
           icon="chevron"
         />,
       ],

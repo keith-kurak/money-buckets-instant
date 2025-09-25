@@ -1,4 +1,4 @@
-import { IconHeaderButton } from "@/component/IconHeaderButton";
+import { IconHeaderButton } from "@/components/IconHeaderButton";
 import colors from "@/constants/colors";
 import { db } from "@/db";
 import { amountsToBalance, formatCurrency } from "@/lib/utils";

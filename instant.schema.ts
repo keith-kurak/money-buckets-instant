@@ -22,7 +22,7 @@ const _schema = i.schema({
       createdAt: i.date(),
     }),
     profiles: i.entity({
-      name: i.string().optional(),
+      name: i.string(),
       permissions: i.string().optional(),
     }),
   },

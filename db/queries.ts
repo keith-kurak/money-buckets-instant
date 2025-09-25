@@ -41,3 +41,25 @@ export function useCurrentProfileQuery() {
 
   return { isLoading, error, profile };
 }
+
+export function useProfilesQuery() {
+  const { data, isLoading, error } = db.useQuery({
+    profiles: {},
+  });
+
+  return { data, isLoading, error };
+}
+
+export function useProfileQuery(profileId: string) {
+  const { data, isLoading, error } = db.useQuery({
+    profiles: {
+      $: {
+        where: { id: profileId },
+      },
+    },
+  });
+
+  const profile = data?.profiles?.[0];
+
+  return { isLoading, error, profile };
+}
