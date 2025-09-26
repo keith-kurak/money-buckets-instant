@@ -1,8 +1,8 @@
 import { IconHeaderButton } from "@/components/IconHeaderButton";
 import colors from "@/constants/colors";
 import { useProfilesQuery } from "@/db/queries";
-import { Stack, useRouter } from "expo-router";
-import { FlatList, Text, View } from "react-native";
+import { Link, Stack, useRouter } from "expo-router";
+import { FlatList, Pressable, Text, View } from "react-native";
 
 export default function ProfilesScreen() {
   const { data, isLoading, error } = useProfilesQuery();
@@ -29,7 +29,8 @@ export default function ProfilesScreen() {
       <FlatList
         data={data?.profiles || []}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <ProfileItem profile={item} />}
+        renderItem={({ item }) => <ProfileItem profile={item}  />}
+        ItemSeparatorComponent={() => <View className="h-0.5 bg-gray-200" />}
       />
     </>
   );
@@ -37,8 +38,12 @@ export default function ProfilesScreen() {
 
 function ProfileItem(props: { profile: { id: string; name: string } }) {
   return (
-    <View>
-      <Text>{props.profile.name}</Text>
-    </View>
+    <Link href={`/(logged-in)/(tabs)/settings/profiles/${props.profile.id}`} asChild>
+      <Pressable>
+        <View className="p-4">
+          <Text className="text-lg font-semibold">{props.profile.name}</Text>
+        </View>
+      </Pressable>
+    </Link>
   );
 }

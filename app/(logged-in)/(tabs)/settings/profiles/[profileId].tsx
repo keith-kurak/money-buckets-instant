@@ -27,6 +27,10 @@ function EditProfileScreen(props: { profileId: string }) {
   const { updateProfile } = useUpdateProfileMutation();
   const router = useRouter();
 
+  if (!profile) {
+    return null;
+  }
+
   return (
     <ProfileForm
       profile={profile || undefined}
@@ -79,6 +83,7 @@ function ProfileForm(props: {
           value={name}
           onChangeText={setName}
           placeholder="Profile name"
+          autoFocus
         />
         <FormSubmitButton
           title={profile ? "Update Profile" : "Create Profile"}
