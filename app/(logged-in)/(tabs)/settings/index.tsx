@@ -31,38 +31,6 @@ export default function Settings() {
     );
   }
 
-  /*const options = [
-    <PressableOptionCell
-      key="groupName"
-      title={group?.title || "No Group"}
-      subheading="Budget name"
-      onPress={() => {}}
-      icon="edit"
-    />,
-    <PressableOptionCell
-      key="profile"
-      title={profile?.name || "No profile selected"}
-      subheading="Current profile"
-      onPress={() => {}}
-      icon="edit"
-    />,
-    <PressableOptionCell
-      key="editProfiles"
-      title="Edit Profiles"
-      subheading="Add or change profiles"
-      onPress={() => {}}
-      icon="chevron"
-    />,
-    <PressableOptionCell
-      key="logout"
-      title="Log Out"
-      subheading=""
-      onPress={() => {
-        db.auth.signOut();
-      }}
-      icon="chevron"
-    />
-  ];*/
   const sections = [
     {
       title: "Budget Settings",
@@ -71,7 +39,9 @@ export default function Settings() {
           key="groupName"
           label="Budget Name"
           value={group?.title || "No Group"}
-          onPress={() => {}}
+          onPress={() => {
+            router.push("/(logged-in)/(tabs)/settings/edit-group");
+          }}
         />,
       ],
     },

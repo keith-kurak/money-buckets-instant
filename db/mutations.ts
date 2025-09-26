@@ -87,6 +87,18 @@ export const useCreateGroupMutation = () => {
   return { createGroup };
 };
 
+export const useUpdateGroupMutation = () => {
+  const updateGroup = (groupId: string, title: string) => {
+    db.transact([
+      db.tx.groups[groupId].update({
+        title,
+      }),
+    ]);
+  };
+
+  return { updateGroup };
+}
+
 export const useCreateProfileMutation = () => {
   const currentGroupId = useLocalContext().currentGroupId;
 
