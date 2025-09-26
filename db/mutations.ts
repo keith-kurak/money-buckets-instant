@@ -41,6 +41,34 @@ export const useCreateBucketMutation = () => {
   return { createBucket };
 };
 
+export const useCreateTransactionMutation = () => {
+  const { currentProfileId } = useLocalContext();
+
+  const createTransaction = (
+    title: string,
+    amount: number,
+    bucketId: string
+  ) => {
+    const newId = id();
+    const transactions = [
+      db.tx.transactions[newId].create({
+        title,
+        amount,
+        date: new Date(),
+        createdAt: new Date(),
+      }),
+      db.tx.buckets[bucketId as string].link({ transactions: newId }),
+    ];
+    if (currentProfileId) {
+      transactions.push(
+        db.tx.transactions[newId].link({ profile: currentProfileId })
+      );
+    }
+    db.transact(transactions);
+  };  
+  return { createTransaction };
+}
+
 export const useCreateGroupMutation = () => {
   const setCurrentGroupId = useLocalContext().setCurrentGroupId;
   const currentUser = db.useUser();

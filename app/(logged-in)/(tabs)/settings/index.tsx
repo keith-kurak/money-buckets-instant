@@ -82,7 +82,9 @@ export default function Settings() {
           key="profile"
           label="Current Profile"
           value={profile?.name || "No profile selected"}
-          onPress={() => {}}
+          onPress={() => {
+            router.push("/(logged-in)/(tabs)/settings/set-profile");
+          }}
         />,
         <PressableOptionCell
           key="editProfiles"

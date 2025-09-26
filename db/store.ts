@@ -8,7 +8,7 @@ export interface LocalContext {
   currentGroupId?: string;
   setCurrentGroupId: (groupId: string) => void;
   currentProfileId?: string;
-  setCurrentProfileId?: (profileId: string) => void;
+  setCurrentProfileId: (profileId: string) => void;
 }
 
 const localContext$ = observable<LocalContext>({

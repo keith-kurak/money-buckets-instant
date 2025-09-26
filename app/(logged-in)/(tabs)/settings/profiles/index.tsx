@@ -1,4 +1,5 @@
 import { IconHeaderButton } from "@/components/IconHeaderButton";
+import { ListItemSeparator } from "@/components/ListItemSeparator";
 import colors from "@/constants/colors";
 import { useProfilesQuery } from "@/db/queries";
 import { Link, Stack, useRouter } from "expo-router";
@@ -30,7 +31,7 @@ export default function ProfilesScreen() {
         data={data?.profiles || []}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <ProfileItem profile={item}  />}
-        ItemSeparatorComponent={() => <View className="h-0.5 bg-gray-200" />}
+        ItemSeparatorComponent={() => <ListItemSeparator />}
       />
     </>
   );

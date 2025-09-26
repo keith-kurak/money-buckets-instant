@@ -1,5 +1,6 @@
 import colors from "@/constants/colors";
-import { db, id } from "@/db";
+import { db } from "@/db";
+import { useCreateTransactionMutation } from "@/db/mutations";
 import classNames from "classnames";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
@@ -16,7 +17,6 @@ export default function AddTransactionScreen() {
   const query = {
     buckets: {
       $: { where: { id: bucketId as string } },
-      transactions: {},
     },
   };
 
@@ -24,17 +24,14 @@ export default function AddTransactionScreen() {
 
   const bucketColor = data?.buckets?.[0]?.color || colors.tint;
 
+  const { createTransaction } = useCreateTransactionMutation();
+
   const addTransaction = () => {
-    const newId = id();
-    db.transact([
-      db.tx.transactions[newId].create({
-        title,
-        amount: parseFloat(amount) * (type === "expense" ? -1 : 1),
-        date: new Date(),
-        createdAt: new Date(),
-      }),
-      db.tx.buckets[bucketId as string].link({ transactions: newId }),
-    ]);
+    createTransaction(
+      title,
+      parseFloat(amount) * (type === "expense" ? -1 : 1),
+      bucketId as string
+    );
 
     setTitle("");
     setAmount("");
@@ -44,7 +41,13 @@ export default function AddTransactionScreen() {
 
   return (
     <View className="p-4 border-t border-gray-200, gap-y-4">
-      <Stack.Screen options={{ title: "Add Transaction", headerShown: true, headerStyle: { backgroundColor: bucketColor } }} />
+      <Stack.Screen
+        options={{
+          title: "Add Transaction",
+          headerShown: true,
+          headerStyle: { backgroundColor: bucketColor },
+        }}
+      />
       <ExpenseOrIncomeSelector selectedType={type} onSelect={setType} />
       <TextInput
         className="border border-gray-300 rounded p-2"
