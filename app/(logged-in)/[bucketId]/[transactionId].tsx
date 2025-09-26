@@ -1,12 +1,26 @@
 import colors from "@/constants/colors";
 import { db } from "@/db";
-import { useCreateTransactionMutation } from "@/db/mutations";
+import { useCreateTransactionMutation, useDeleteTransactionMutation } from "@/db/mutations";
+import { useTransactionQuery } from "@/db/queries";
+import { formatCurrency } from "@/lib/utils";
 import classNames from "classnames";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 
-export default function AddTransactionScreen() {
+export default function AddOrEditTransactionScreen() {
+  const { transactionId } = useLocalSearchParams();
+
+  const isEdit = transactionId !== "add";
+
+  return isEdit ? (
+    <EditTransactionScreen transactionId={transactionId as string} />
+  ) : (
+    <AddTransactionScreen />
+  );
+}
+
+function AddTransactionScreen() {
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [type, setType] = useState<"expense" | "income">("expense");
@@ -107,6 +121,46 @@ function ExpenseOrIncomeSelector(props: {
         >
           Income
         </Text>
+      </Pressable>
+    </View>
+  );
+}
+
+function EditTransactionScreen(props: { transactionId: string }) {
+  const { transactionId } = props;
+  const router = useRouter();
+
+  const { transaction, isLoading, error } = useTransactionQuery(transactionId);
+
+  const bucketColor = transaction?.bucket?.color || colors.tint;
+
+  const { deleteTransaction } = useDeleteTransactionMutation();
+
+  const onPressDelete = () => {
+    deleteTransaction(transactionId);
+    router.back();
+  };
+
+  return (
+    <View className="p-4 border-t border-gray-200, gap-y-4">
+      <Stack.Screen
+        options={{
+          title: "Transaction",
+          headerShown: true,
+          headerStyle: { backgroundColor: bucketColor },
+        }}
+      />
+      <Text
+        className="border border-gray-300 rounded p-2"
+      >{transaction?.title}</Text>
+      <Text
+        className="border border-gray-300 rounded p-2"
+      >{formatCurrency(transaction?.amount || 0)}</Text>
+      <Pressable
+        className=" p-2 rounded-md justify-center items-center bg-red-700"
+        onPress={onPressDelete}
+      >
+        <Text className="text-white">Delete</Text>
       </Pressable>
     </View>
   );

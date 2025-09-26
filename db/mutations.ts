@@ -126,3 +126,11 @@ export const useUpdateProfileMutation = () => {
 
   return { updateProfile };
 }
+
+export const useDeleteTransactionMutation = () => {
+  const deleteTransaction = (transactionId: string) => {
+    db.transact([db.tx.transactions[transactionId].delete()]);
+  };
+
+  return { deleteTransaction };
+}

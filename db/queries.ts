@@ -28,6 +28,22 @@ export function useBucketQuery(bucketId: string) {
   return { isLoading, error, bucket };
 }
 
+export function useTransactionQuery(transactionId: string) {
+  const { data, isLoading, error } = db.useQuery({
+    transactions: {
+      $: {
+        where: { id: transactionId },
+      },
+      bucket: {},
+      profile: {},
+    },
+  });
+
+  const transaction = data?.transactions?.[0];
+
+  return { isLoading, error, transaction };
+}
+
 export function useCurrentGroupQuery() {
   const currentGroupId = useLocalContext().currentGroupId;
   const { data, isLoading, error } = db.useQuery({
