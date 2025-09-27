@@ -21,11 +21,13 @@ export default function Welcome() {
         autoCorrect={false}
         value={code}
         onChangeText={setCode}
+        autoFocus
       />
       <Pressable
         className="px-6 py-3 bg-tint rounded-lg shadow"
         onPress={async () => {
           await db.auth.signInWithMagicCode({ email: email as string, code })
+          // not sure why it stil wants this
           router.replace("/(logged-in)");
         }}
       >

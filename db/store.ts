@@ -9,6 +9,7 @@ export interface LocalContext {
   setCurrentGroupId: (groupId: string) => void;
   currentProfileId?: string;
   setCurrentProfileId: (profileId: string) => void;
+  clearContext: () => void;
 }
 
 const localContext$ = observable<LocalContext>({
@@ -19,6 +20,10 @@ const localContext$ = observable<LocalContext>({
   },
   setCurrentProfileId: (profileId: string) => {
     localContext$.currentProfileId.set(profileId);
+  },
+  clearContext: () => {
+    localContext$.currentGroupId.set(undefined);
+    localContext$.currentProfileId.set(undefined);
   }
 });
 
