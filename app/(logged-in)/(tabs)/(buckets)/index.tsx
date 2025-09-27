@@ -43,7 +43,7 @@ export default function Index() {
           justifyContent: "flex-end",
         }}
       >
-        <Link href="/add-bucket" asChild>
+        <Link href="./add-bucket" asChild>
           <Pressable className="p-4">
             <Entypo name="plus" size={24} color={colors.tint} />
           </Pressable>
@@ -64,7 +64,7 @@ function BucketView(props: {
   const { title, color } = props.bucket;
 
   return (
-    <Link href={`/${props.bucket.id}`} asChild>
+    <Link href={`/buckets/${props.bucket.id}`} asChild>
       <Pressable>
         <View className="p-4 border-b border-gray-200 flex-row justify-between items-center">
           <Text style={{ borderBottomWidth: 2, borderBottomColor: color }} className="text-xl">{title}</Text>

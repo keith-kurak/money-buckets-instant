@@ -11,7 +11,7 @@ export default function Layout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="(buckets)"
         options={{
           title: "Buckets",
           tabBarLabel: "Buckets",
@@ -21,7 +21,7 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
-        name="transactions"
+        name="(transactions)"
         options={{
           title: "Transactions",
           tabBarLabel: "Transactions",

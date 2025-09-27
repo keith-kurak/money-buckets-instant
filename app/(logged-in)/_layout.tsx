@@ -27,9 +27,6 @@ export default function RootLayout() {
     >
       <Stack.Protected guard={!!currentGroupId}>
         <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="[bucketId]" />
-        <Stack.Screen name="[bucketId]/add" />
-        <Stack.Screen name="add-bucket" />
       </Stack.Protected>
       <Stack.Protected guard={!currentGroupId}>
         <Stack.Screen name="onboarding/choose-group" />
