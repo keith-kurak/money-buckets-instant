@@ -1,6 +1,7 @@
 import { EnterTextModal } from "@/components/EnterTextModal";
 import { db } from "@/db";
 import { useCurrentGroupQuery, useCurrentProfileQuery } from "@/db/queries";
+import { useLocalContext } from "@/db/store";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -12,6 +13,8 @@ export default function Settings() {
   const router = useRouter();
 
   const { profile } = useCurrentProfileQuery();
+
+  const { clearContext } = useLocalContext();
 
   const [isEditGroupNameDialogVisible, setIsEditGroupNameDialogVisible] =
     useState(false);
@@ -75,6 +78,7 @@ export default function Settings() {
           title="Log Out"
           onPress={() => {
             db.auth.signOut();
+            clearContext();
           }}
           color="red"
         />,

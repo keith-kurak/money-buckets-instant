@@ -6,14 +6,14 @@ export const unstable_settings = {
   initialRouteName: 'index',
 };
 
-export default function SettingsLayout() {
+export default function Layout() {
   return (
     <Stack
       screenOptions={{
-        title: "Settings",
-        headerShown: false,
-        headerTintColor: colors.white,
         headerStyle: { backgroundColor: colors.tint },
+        headerTintColor: colors.white,
+        headerBackButtonDisplayMode: "minimal",
+        headerShown: false,
       }}
     />
   );

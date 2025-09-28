@@ -37,7 +37,7 @@ export default function Transactions() {
             <IconHeaderButton
               icon="plus"
               onPress={() => {
-                router.navigate(`/${bucketId}/add`);
+                router.navigate(`/buckets/${bucketId}/add`);
               }}
             />
           ),
@@ -76,7 +76,7 @@ function TransactionView(props: {
   const { title, amount, date, profile, id } = props.transaction;
 
   return (
-    <Link href={`/${props.bucketId}/${id}`} asChild>
+    <Link href={`/buckets/${props.bucketId}/${id}`} asChild>
       <Pressable>
         <View
           className={classNames(

@@ -13,13 +13,16 @@ export default function ChooseGroup() {
 
   useEffect(() => {
     (async function () {
-      const { data } = await db.queryOnce({ groups: {} });
-      setData(data.groups);
-      if (data.groups.length >= 1) {
-        setCurrentGroupId(data.groups[0].id);
+      try {
+        const { data } = await db.queryOnce({ groups: {} });
+        setData(data.groups);
+        if (data.groups.length >= 1) {
+          setCurrentGroupId(data.groups[0].id);
+        }
+      } finally {
+        setIsLoading(false);
       }
     })();
-    setIsLoading(false);
   }, [setCurrentGroupId]);
 
   if (isLoading) {
@@ -42,6 +45,7 @@ export default function ChooseGroup() {
           autoCorrect={false}
           value={title}
           onChangeText={setTitle}
+          autoFocus
         />
         <Pressable
           className="px-6 py-3 bg-tint rounded-lg shadow"

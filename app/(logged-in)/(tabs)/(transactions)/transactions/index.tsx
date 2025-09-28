@@ -55,7 +55,7 @@ function TransactionView(props: {
 
   return (
     <Link
-      href={`/${bucket ? bucket.id : ""}`}
+      href={`/buckets/${bucket ? bucket.id : ""}`}
       asChild
     >
       <Pressable>

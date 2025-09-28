@@ -21,6 +21,7 @@ export default function Welcome() {
         autoCorrect={false}
         value={email}
         onChangeText={setEmail}
+        autoFocus
       />
       <Pressable
         className="px-6 py-3 bg-tint rounded-lg shadow"
