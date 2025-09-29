@@ -36,6 +36,7 @@ export default function Transactions() {
         }}
       />
       <FlatList
+        className="p-safe"
         data={myData}
         renderItem={({ item }) => <TransactionView transaction={item} />}
       />

@@ -86,7 +86,7 @@ export default function Settings() {
     },
   ];
   return (
-    <View className="flex-1 bg-gray-200">
+    <View className="flex-1 bg-gray-200 p-safe">
       <SectionList
         sections={sections}
         SectionSeparatorComponent={() => <View className="h-1 bg-transparent" />}

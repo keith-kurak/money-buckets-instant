@@ -3,12 +3,7 @@ import { useBucketsQuery } from "@/db/queries";
 import { amountsToBalance, formatCurrency } from "@/lib/utils";
 import Entypo from "@expo/vector-icons/Entypo";
 import { Link, Stack } from "expo-router";
-import {
-  FlatList,
-  Pressable,
-  Text,
-  View
-} from "react-native";
+import { FlatList, Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Index() {
@@ -36,7 +31,7 @@ export default function Index() {
       <Stack.Screen options={{ title: "Buckets" }} />
       <View
         style={{
-          height: 64,
+          height: 64 + top,
           paddingTop: top,
           flexDirection: "row",
           alignItems: "center",
@@ -51,7 +46,12 @@ export default function Index() {
       </View>
       <FlatList
         data={data?.buckets || []}
-        renderItem={({ item }) => <BucketView bucket={item} balance={amountsToBalance(item.transactions)} />}
+        renderItem={({ item }) => (
+          <BucketView
+            bucket={item}
+            balance={amountsToBalance(item.transactions)}
+          />
+        )}
       />
     </>
   );
@@ -67,11 +67,17 @@ function BucketView(props: {
     <Link href={`/buckets/${props.bucket.id}`} asChild>
       <Pressable>
         <View className="p-4 border-b border-gray-200 flex-row justify-between items-center">
-          <Text style={{ borderBottomWidth: 2, borderBottomColor: color }} className="text-xl">{title}</Text>
-          <Text style={{ color }} className="text-2xl">{formatCurrency(props.balance)}</Text>
+          <Text
+            style={{ borderBottomWidth: 2, borderBottomColor: color }}
+            className="text-xl"
+          >
+            {title}
+          </Text>
+          <Text style={{ color }} className="text-2xl">
+            {formatCurrency(props.balance)}
+          </Text>
         </View>
       </Pressable>
     </Link>
   );
 }
-
