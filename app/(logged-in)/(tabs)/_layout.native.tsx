@@ -24,7 +24,7 @@ export default function Layout() {
   }
 
   return (
-    <NativeTabs tintColor={colors.tint}>
+    <NativeTabs labelVisibilityMode="unlabeled" tintColor={colors.tint}>
       <NativeTabs.Trigger name="(buckets)">
         <Label>Buckets</Label>
         <Icon src={<VectorIcon family={FontAwesome6} name="bucket" />} />
