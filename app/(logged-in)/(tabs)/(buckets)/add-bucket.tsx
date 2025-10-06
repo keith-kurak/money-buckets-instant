@@ -23,14 +23,14 @@ export default function AddBucketScreen() {
       <Stack.Screen options={{ title: "New Bucket", headerShown: true }} />
       <View className="p-4 gap-y-4">
         <TextInput
-          className="border border-gray-300 rounded p-2 flex-1 mr-2"
+          className="border border-gray-300 rounded p-2 mr-2"
           placeholder="New Bucket Title"
           value={title}
           onChangeText={setTitle}
           autoFocus={true}
         />
         <TextInput
-          className="border border-gray-300 rounded p-2 flex-1 mr-2"
+          className="border border-gray-300 rounded p-2 mr-2"
           placeholder="Starting Balance"
           value={startingBalance}
           onChangeText={setStartingBalance}
