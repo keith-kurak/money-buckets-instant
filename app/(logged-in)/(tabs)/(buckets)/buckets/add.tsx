@@ -37,7 +37,6 @@ export default function AddBucketScreen() {
         />
         <View className="flex-row mt-4 justify-between">
           {[
-            "#F44336",
             "#E91E63",
             "#9C27B0",
             "#3F51B5",

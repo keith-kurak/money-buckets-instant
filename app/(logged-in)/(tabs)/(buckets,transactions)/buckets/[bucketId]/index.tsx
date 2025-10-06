@@ -1,4 +1,5 @@
 import { IconHeaderButton } from "@/components/IconHeaderButton";
+import { ListItemSeparator } from "@/components/ListItemSeparator";
 import colors from "@/constants/colors";
 import { useBucketQuery } from "@/db/queries";
 import { amountsToBalance, formatCurrency } from "@/lib/utils";
@@ -45,9 +46,11 @@ export default function Transactions() {
       />
       <FlatList
         data={myData}
+        contentContainerClassName=""
         renderItem={({ item }) => (
           <TransactionView transaction={item} bucketId={bucketId as string} />
         )}
+        ItemSeparatorComponent={() => <ListItemSeparator />}
         ListHeaderComponent={() => (
           <View className="py-4 px-4 justify-center items-center">
             <Text
@@ -81,7 +84,6 @@ function TransactionView(props: {
         <View
           className={classNames(
             "p-4 border-b border-gray-200 flex-row justify-between items-center",
-            amount < 0 ? "bg-red-100" : "bg-green-100"
           )}
         >
           <View>
@@ -93,7 +95,12 @@ function TransactionView(props: {
               <Text className="text-xs text-gray-500">{profile.name}</Text>
             )}
           </View>
-          <Text className="text-2xl">{formatCurrency(amount)}</Text>
+          <Text className={classNames("text-2xl", {
+            "text-red-500": amount < 0,
+            "text-green-500": amount >= 0,
+          })}>
+            {formatCurrency(amount)}
+          </Text>
         </View>
       </Pressable>
     </Link>
