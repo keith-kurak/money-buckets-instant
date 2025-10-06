@@ -43,7 +43,7 @@ export default function Index() {
           justifyContent: "flex-end",
         }}
       >
-        <Link href="./add-bucket" asChild>
+        <Link href="./buckets/add" asChild>
           <Pressable className="p-4">
             <Entypo name="plus" size={24} color={colors.tint} />
           </Pressable>
