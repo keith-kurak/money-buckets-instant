@@ -126,7 +126,7 @@ function PressableOptionCell(props: {
       <View className="flex-row justify-between items-center">
         <View>
           <Text className="text-lg">{props.title}</Text>
-          <Text className="text-sm text-gray-500">{props.subheading}</Text>
+          {props.subheading && <Text className="text-sm text-gray-500">{props.subheading}</Text>} 
         </View>
         <View>
           {props.icon === "edit" && <Text className="text-lg">✏️</Text>}

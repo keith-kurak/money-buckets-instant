@@ -32,7 +32,7 @@ export default function Transactions() {
         options={{
           title: "Transactions",
           headerStyle: { backgroundColor: colors.tint },
-          headerShown: false,
+          headerShown: true,
         }}
       />
       <FlatList
