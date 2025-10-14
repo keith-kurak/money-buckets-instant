@@ -13,7 +13,7 @@ export default function Layout() {
         headerStyle: { backgroundColor: colors.tint },
         headerTintColor: colors.white,
         headerBackButtonDisplayMode: "minimal",
-        headerShown: false,
+        // headerShown: false,
       }}
     />
   );

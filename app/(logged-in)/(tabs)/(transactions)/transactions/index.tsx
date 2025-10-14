@@ -1,15 +1,11 @@
+import { LoadingWrapper } from "@/components/LoadingWrapper";
 import colors from "@/constants/colors";
 import { db } from "@/db";
 import { formatCurrency } from "@/lib/utils";
 import classNames from "classnames";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { sortBy } from "lodash";
-import {
-  FlatList,
-  Pressable,
-  Text,
-  View
-} from "react-native";
+import { FlatList, Pressable, Text, View } from "react-native";
 
 export default function Transactions() {
   const { bucketId } = useLocalSearchParams();
@@ -24,7 +20,9 @@ export default function Transactions() {
 
   const { data, isLoading, error } = db.useQuery(query);
 
-  const myData = sortBy(data?.transactions || [], (t) => t.createdAt).reverse();
+  const myData = sortBy(data?.transactions || [], (t) => t.createdAt)
+    .reverse()
+    .filter((t) => t.title !== "Starting Balance");
 
   return (
     <>
@@ -32,13 +30,15 @@ export default function Transactions() {
         options={{
           title: "Transactions",
           headerStyle: { backgroundColor: colors.tint },
-          headerShown: false,
+          headerShown: true,
         }}
       />
-      <FlatList
-        data={myData}
-        renderItem={({ item }) => <TransactionView transaction={item} />}
-      />
+      <LoadingWrapper isLoading={isLoading} error={error}>
+        <FlatList
+          data={myData}
+          renderItem={({ item }) => <TransactionView transaction={item} />}
+        />
+      </LoadingWrapper>
     </>
   );
 }
@@ -54,10 +54,7 @@ function TransactionView(props: {
   const { title, amount, date, bucket } = props.transaction;
 
   return (
-    <Link
-      href={`/buckets/${bucket ? bucket.id : ""}`}
-      asChild
-    >
+    <Link href={`/buckets/${bucket ? bucket.id : ""}`} asChild>
       <Pressable>
         <View
           className={classNames(

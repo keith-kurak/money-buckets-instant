@@ -1,20 +1,20 @@
-import colors from "@/constants/colors";
-import { useBucketsQuery } from "@/db/queries";
+import { IconHeaderButton } from "@/components/IconHeaderButton";
+import { ListItemSeparator } from "@/components/ListItemSeparator";
+import { LoadingWrapper } from "@/components/LoadingWrapper";
+import { useBucketsQuery, useCurrentGroupQuery } from "@/db/queries";
 import { amountsToBalance, formatCurrency } from "@/lib/utils";
-import Entypo from "@expo/vector-icons/Entypo";
-import { Link, Stack } from "expo-router";
-import {
-  FlatList,
-  Pressable,
-  Text,
-  View
-} from "react-native";
+import { Link, Stack, useRouter } from "expo-router";
+import { FlatList, Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Index() {
   const { top } = useSafeAreaInsets();
 
+  const { group } = useCurrentGroupQuery();
+
   const { data, isLoading, error } = useBucketsQuery();
+
+  const router = useRouter();
 
   if (isLoading) {
     return (
@@ -33,26 +33,31 @@ export default function Index() {
 
   return (
     <>
-      <Stack.Screen options={{ title: "Buckets" }} />
-      <View
-        style={{
-          height: 64,
-          paddingTop: top,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "flex-end",
+      <Stack.Screen
+        options={{
+          title: group?.title || "Buckets",
+          headerRight: () => (
+            <IconHeaderButton
+              icon="plus"
+              onPress={() => {
+                router.navigate(`/buckets/add`);
+              }}
+            />
+          ),
         }}
-      >
-        <Link href="./buckets/add" asChild>
-          <Pressable className="p-4">
-            <Entypo name="plus" size={24} color={colors.tint} />
-          </Pressable>
-        </Link>
-      </View>
-      <FlatList
-        data={data?.buckets || []}
-        renderItem={({ item }) => <BucketView bucket={item} balance={amountsToBalance(item.transactions)} />}
       />
+      <LoadingWrapper isLoading={isLoading} error={error}>
+        <FlatList
+          data={data?.buckets || []}
+          renderItem={({ item }) => (
+            <BucketView
+              bucket={item}
+              balance={amountsToBalance(item.transactions)}
+            />
+          )}
+          ItemSeparatorComponent={() => <ListItemSeparator />}
+        />
+      </LoadingWrapper>
     </>
   );
 }
@@ -66,12 +71,21 @@ function BucketView(props: {
   return (
     <Link href={`/buckets/${props.bucket.id}`} asChild>
       <Pressable>
-        <View className="p-4 border-b border-gray-200 flex-row justify-between items-center">
-          <Text style={{ borderBottomWidth: 2, borderBottomColor: color }} className="text-xl">{title}</Text>
-          <Text style={{ color }} className="text-2xl">{formatCurrency(props.balance)}</Text>
+        <View className="p-4 flex-row justify-between items-center">
+          <View className="flex-row items-center justify-start">
+            <View
+              style={{ backgroundColor: color }}
+              className="w-3 h-3 rounded-full mr-4"
+            />
+            <Text style={{ color: color }} className="text-xl">
+              {title}
+            </Text>
+          </View>
+          <Text className="text-2xl color-black">
+            {formatCurrency(props.balance)}
+          </Text>
         </View>
       </Pressable>
     </Link>
   );
 }
-

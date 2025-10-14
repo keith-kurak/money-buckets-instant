@@ -1,5 +1,6 @@
 import { FormSubmitButton } from "@/components/forms/FormSubmitButton";
 import { FormTextInput } from "@/components/forms/FormTextInput";
+import { LoadingWrapper } from "@/components/LoadingWrapper";
 import {
   useCreateProfileMutation,
   useUpdateProfileMutation,
@@ -77,20 +78,22 @@ function ProfileForm(props: {
           headerShown: true,
         }}
       />
-      <View className="p-4 gap-y-4">
-        <FormTextInput
-          label="Name"
-          value={name}
-          onChangeText={setName}
-          placeholder="Profile name"
-          autoFocus
-        />
-        <FormSubmitButton
-          title={profile ? "Update Profile" : "Create Profile"}
-          isLoading={isLoading}
-          onPress={() => props.onSave(name)}
-        />
-      </View>
+      <LoadingWrapper isLoading={isLoading} error={error}>
+        <View className="p-4 gap-y-4">
+          <FormTextInput
+            label="Name"
+            value={name}
+            onChangeText={setName}
+            placeholder="Profile name"
+            autoFocus
+          />
+          <FormSubmitButton
+            title={profile ? "Update Profile" : "Create Profile"}
+            isLoading={isLoading}
+            onPress={() => props.onSave(name)}
+          />
+        </View>
+      </LoadingWrapper>
     </>
   );
 }

@@ -1,5 +1,13 @@
+import { TransactionResult } from "@instantdb/core";
 import { db, id } from "./index";
 import { useLocalContext } from "./store";
+
+export type MutationResult = {
+  success: boolean;
+  errorField?: string;
+  errorMessage?: string;
+  mutationResult?: TransactionResult | undefined; // TODO: maybe return transaction result, but it's async
+}
 
 export const useCreateBucketMutation = () => {
   const currentGroupId = useLocalContext().currentGroupId;
@@ -44,6 +52,23 @@ export const useCreateBucketMutation = () => {
 export const useCreateTransactionMutation = () => {
   const { currentProfileId } = useLocalContext();
 
+  const createTransactionWithValidation = (
+    title: string,
+    amount: string,
+    type: "expense" | "income",
+    bucketId: string
+  ) : MutationResult => {
+    const parsedAmount = parseFloat(amount);
+    if (isNaN(parsedAmount)) {
+      return { success: false, errorField: "amount", errorMessage: "Amount must be a valid number" }; 
+    }
+    if (title.trim() === "") {
+      return { success: false, errorField: "title", errorMessage: "Title cannot be empty" };
+    }
+    createTransaction(title, parsedAmount * (type === "expense" ? -1 : 1), bucketId);
+    return { success: true };
+  }
+
   const createTransaction = (
     title: string,
     amount: number,
@@ -66,7 +91,7 @@ export const useCreateTransactionMutation = () => {
     }
     db.transact(transactions);
   };  
-  return { createTransaction };
+  return { createTransaction, createTransactionWithValidation };
 }
 
 export const useCreateGroupMutation = () => {

@@ -1,4 +1,5 @@
 import { EnterTextModal } from "@/components/EnterTextModal";
+import { LoadingWrapper } from "@/components/LoadingWrapper";
 import { db } from "@/db";
 import { useCurrentGroupQuery, useCurrentProfileQuery } from "@/db/queries";
 import { useLocalContext } from "@/db/store";
@@ -50,6 +51,7 @@ export default function Settings() {
     },
     {
       title: "Profiles",
+      help: "Profiles let you share your budget, identifying who made which changes, and customizing the experience for each user.",
       data: [
         <LabelValueCell
           key="profile"
@@ -86,32 +88,43 @@ export default function Settings() {
     },
   ];
   return (
-    <View className="flex-1 bg-gray-200">
-      <SectionList
-        sections={sections}
-        SectionSeparatorComponent={() => <View className="h-1 bg-transparent" />}
-        ItemSeparatorComponent={() => <View className="h-0.5 bg-gray-200" />}
-        renderSectionHeader={({ section: { title } }) => (
-          <View className="px-4 py-2">
-            <Text className="text-gray-500">{title}</Text>
-          </View>
-        )}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => item}
-      />
-      <EnterTextModal
-        visible={isEditGroupNameDialogVisible}
-        title="Edit Group Name"
-        placeholder="Group Name"
-        initialValue={group?.title || ""}
-        onCancel={() => setIsEditGroupNameDialogVisible(false)}
-        onSubmit={(value) => {
-          // Update group name in the database
-          db.tx.groups.update(group.id, { title: value });
-          setIsEditGroupNameDialogVisible(false);
-        }}
-      />
-    </View>
+    <LoadingWrapper isLoading={isLoading} error={error}>
+      <View className="flex-1 bg-gray-200">
+        <SectionList
+          sections={sections}
+          SectionSeparatorComponent={() => (
+            <View className="h-1 bg-transparent" />
+          )}
+          ItemSeparatorComponent={() => <View className="h-0.5 bg-gray-200" />}
+          renderSectionHeader={({ section: { title } }) => (
+            <View className="px-4 py-2">
+              <Text className="text-gray-500">{title}</Text>
+            </View>
+          )}
+          renderSectionFooter={({ section: { help } }) =>
+            help ? (
+              <View className="px-4 py-2">
+                <Text className="text-sm text-gray-500">{help}</Text>
+              </View>
+            ) : null
+          }
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => item}
+        />
+        <EnterTextModal
+          visible={isEditGroupNameDialogVisible}
+          title="Edit Group Name"
+          placeholder="Group Name"
+          initialValue={group?.title || ""}
+          onCancel={() => setIsEditGroupNameDialogVisible(false)}
+          onSubmit={(value) => {
+            // Update group name in the database
+            db.tx.groups.update(group.id, { title: value });
+            setIsEditGroupNameDialogVisible(false);
+          }}
+        />
+      </View>
+    </LoadingWrapper>
   );
 }
 
@@ -126,11 +139,15 @@ function PressableOptionCell(props: {
       <View className="flex-row justify-between items-center">
         <View>
           <Text className="text-lg">{props.title}</Text>
-          <Text className="text-sm text-gray-500">{props.subheading}</Text>
+          {props.subheading && (
+            <Text className="text-sm text-gray-500">{props.subheading}</Text>
+          )}
         </View>
         <View>
           {props.icon === "edit" && <Text className="text-lg">✏️</Text>}
-          {props.icon === "chevron" && <Ionicons name="chevron-forward" size={20} color="gray" />}
+          {props.icon === "chevron" && (
+            <Ionicons name="chevron-forward" size={20} color="gray" />
+          )}
         </View>
       </View>
     </Pressable>
@@ -146,7 +163,9 @@ function PressableCentered(props: {
     <Pressable onPress={props.onPress} className="p-4 bg-white">
       <View className="flex-row justify-center items-center">
         <View>
-          <Text style={{ color: props.color }} className="text-lg">{props.title}</Text>
+          <Text style={{ color: props.color }} className="text-lg">
+            {props.title}
+          </Text>
         </View>
       </View>
     </Pressable>

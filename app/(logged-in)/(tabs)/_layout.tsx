@@ -3,6 +3,11 @@ import { Tabs, useSegments } from "expo-router";
 import { findIndex } from "lodash";
 import colors from "../../../constants/colors";
 
+export const unstable_settings = {
+  // Ensure any route can link back to `/`
+  initialRouteName: 'index',
+};
+
 export default function Layout() {
 
   const segments = useSegments();
@@ -38,6 +43,7 @@ export default function Layout() {
       <Tabs.Screen
         name="(transactions)"
         options={{
+          href: '/transactions', // not sure why it tries to go to buckets
           title: "Transactions",
           tabBarLabel: "Transactions",
           tabBarIcon: ({ color }) => (
