@@ -1,3 +1,4 @@
+import { LoadingWrapper } from "@/components/LoadingWrapper";
 import colors from "@/constants/colors";
 import { db } from "@/db";
 import { formatCurrency } from "@/lib/utils";
@@ -32,10 +33,12 @@ export default function Transactions() {
           headerShown: true,
         }}
       />
-      <FlatList
-        data={myData}
-        renderItem={({ item }) => <TransactionView transaction={item} />}
-      />
+      <LoadingWrapper isLoading={isLoading} error={error}>
+        <FlatList
+          data={myData}
+          renderItem={({ item }) => <TransactionView transaction={item} />}
+        />
+      </LoadingWrapper>
     </>
   );
 }

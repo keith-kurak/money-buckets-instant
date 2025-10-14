@@ -1,8 +1,7 @@
 import { FormSubmitButton } from "@/components/forms/FormSubmitButton";
 import { FormTextInput } from "@/components/forms/FormTextInput";
-import {
-  useUpdateGroupMutation,
-} from "@/db/mutations";
+import { LoadingWrapper } from "@/components/LoadingWrapper";
+import { useUpdateGroupMutation } from "@/db/mutations";
 import { useCurrentGroupQuery } from "@/db/queries";
 import { Stack, useRouter } from "expo-router";
 import { useState } from "react";
@@ -49,20 +48,22 @@ function GroupForm(props: {
           headerShown: true,
         }}
       />
-      <View className="p-4 gap-y-4">
-        <FormTextInput
-          label="Title"
-          value={title}
-          onChangeText={setTitle}
-          placeholder="Budget title"
-          autoFocus
-        />
-        <FormSubmitButton
-          title={"Update Budget"}
-          isLoading={isLoading}
-          onPress={() => props.onSave(title)}
-        />
-      </View>
+      <LoadingWrapper isLoading={isLoading} error={error}>
+        <View className="p-4 gap-y-4">
+          <FormTextInput
+            label="Title"
+            value={title}
+            onChangeText={setTitle}
+            placeholder="Budget title"
+            autoFocus
+          />
+          <FormSubmitButton
+            title={"Update Budget"}
+            isLoading={isLoading}
+            onPress={() => props.onSave(title)}
+          />
+        </View>
+      </LoadingWrapper>
     </>
   );
 }

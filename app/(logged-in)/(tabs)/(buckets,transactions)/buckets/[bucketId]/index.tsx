@@ -1,5 +1,6 @@
 import { IconHeaderButton } from "@/components/IconHeaderButton";
 import { ListItemSeparator } from "@/components/ListItemSeparator";
+import { LoadingWrapper } from "@/components/LoadingWrapper";
 import colors from "@/constants/colors";
 import { useBucketQuery } from "@/db/queries";
 import { amountsToBalance, formatCurrency } from "@/lib/utils";
@@ -14,9 +15,6 @@ export default function Transactions() {
   const router = useRouter();
 
   const { bucket, isLoading, error } = useBucketQuery(bucketId as string);
-
-  if (isLoading) return <Text>Loading...</Text>;
-  if (error) return <Text>Error loading bucket</Text>;
 
   const bucketColor = bucket?.color || colors.tint;
 
@@ -44,24 +42,26 @@ export default function Transactions() {
           ),
         }}
       />
-      <FlatList
-        data={myData}
-        contentContainerClassName=""
-        renderItem={({ item }) => (
-          <TransactionView transaction={item} bucketId={bucketId as string} />
-        )}
-        ItemSeparatorComponent={() => <ListItemSeparator />}
-        ListHeaderComponent={() => (
-          <View className="py-4 px-4 justify-center items-center">
-            <Text
-              className="text-5xl font-bold"
-              style={{ color: bucketColor }}
-            >
-              {formatCurrency(bucketBalance)}
-            </Text>
-          </View>
-        )}
-      />
+      <LoadingWrapper isLoading={isLoading} error={error}>
+        <FlatList
+          data={myData}
+          contentContainerClassName=""
+          renderItem={({ item }) => (
+            <TransactionView transaction={item} bucketId={bucketId as string} />
+          )}
+          ItemSeparatorComponent={() => <ListItemSeparator />}
+          ListHeaderComponent={() => (
+            <View className="py-4 px-4 justify-center items-center">
+              <Text
+                className="text-5xl font-bold"
+                style={{ color: bucketColor }}
+              >
+                {formatCurrency(bucketBalance)}
+              </Text>
+            </View>
+          )}
+        />
+      </LoadingWrapper>
     </>
   );
 }
@@ -83,7 +83,7 @@ function TransactionView(props: {
       <Pressable>
         <View
           className={classNames(
-            "p-4 border-b border-gray-200 flex-row justify-between items-center",
+            "p-4 border-b border-gray-200 flex-row justify-between items-center"
           )}
         >
           <View>
@@ -95,10 +95,12 @@ function TransactionView(props: {
               <Text className="text-xs text-gray-500">{profile.name}</Text>
             )}
           </View>
-          <Text className={classNames("text-2xl", {
-            "text-red-500": amount < 0,
-            "text-green-500": amount >= 0,
-          })}>
+          <Text
+            className={classNames("text-2xl", {
+              "text-red-500": amount < 0,
+              "text-green-500": amount >= 0,
+            })}
+          >
             {formatCurrency(amount)}
           </Text>
         </View>

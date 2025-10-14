@@ -1,5 +1,6 @@
 import { IconHeaderButton } from "@/components/IconHeaderButton";
 import { ListItemSeparator } from "@/components/ListItemSeparator";
+import { LoadingWrapper } from "@/components/LoadingWrapper";
 import { useBucketsQuery, useCurrentGroupQuery } from "@/db/queries";
 import { amountsToBalance, formatCurrency } from "@/lib/utils";
 import { Link, Stack, useRouter } from "expo-router";
@@ -45,16 +46,18 @@ export default function Index() {
           ),
         }}
       />
-      <FlatList
-        data={data?.buckets || []}
-        renderItem={({ item }) => (
-          <BucketView
-            bucket={item}
-            balance={amountsToBalance(item.transactions)}
-          />
-        )}
-        ItemSeparatorComponent={() => <ListItemSeparator />}
-      />
+      <LoadingWrapper isLoading={isLoading} error={error}>
+        <FlatList
+          data={data?.buckets || []}
+          renderItem={({ item }) => (
+            <BucketView
+              bucket={item}
+              balance={amountsToBalance(item.transactions)}
+            />
+          )}
+          ItemSeparatorComponent={() => <ListItemSeparator />}
+        />
+      </LoadingWrapper>
     </>
   );
 }
@@ -68,17 +71,15 @@ function BucketView(props: {
   return (
     <Link href={`/buckets/${props.bucket.id}`} asChild>
       <Pressable>
-        <View
-          className="p-4 flex-row justify-between items-center"
-        >
+        <View className="p-4 flex-row justify-between items-center">
           <View className="flex-row items-center justify-start">
-          <View style={{ backgroundColor: color }} className="w-3 h-3 rounded-full mr-4" />
-          <Text
-            style={{ color: color }}
-            className="text-xl"
-          >
-            {title}
-          </Text>
+            <View
+              style={{ backgroundColor: color }}
+              className="w-3 h-3 rounded-full mr-4"
+            />
+            <Text style={{ color: color }} className="text-xl">
+              {title}
+            </Text>
           </View>
           <Text className="text-2xl color-black">
             {formatCurrency(props.balance)}

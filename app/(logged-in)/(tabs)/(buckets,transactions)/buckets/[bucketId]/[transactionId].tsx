@@ -1,4 +1,5 @@
 import { FormTextInput } from "@/components/forms/FormTextInput";
+import { LoadingWrapper } from "@/components/LoadingWrapper";
 import colors from "@/constants/colors";
 import { db } from "@/db";
 import {
@@ -67,40 +68,42 @@ function AddTransactionScreen() {
   };
 
   return (
-    <View className="p-4 border-t border-gray-200, gap-y-4">
-      <Stack.Screen
-        options={{
-          title: "Add Transaction",
-          headerShown: true,
-          headerStyle: { backgroundColor: bucketColor },
-        }}
-      />
-      <ExpenseOrIncomeSelector selectedType={type} onSelect={setType} />
-      <FormTextInput
-        placeholder="Amount"
-        value={amount}
-        onChangeText={setAmount}
-        keyboardType="numeric"
-        label="Amount"
-        autoFocus
-        hasValidationError={mutationResult?.errorField === "amount"}
-      />
-      <FormTextInput
-        placeholder="Description"
-        value={title}
-        onChangeText={setTitle}
-        label="Description"
-        hasValidationError={mutationResult?.errorField === "title"}
-      />
-      <Pressable
-        className=" p-2 rounded-md justify-center items-center"
-        style={{ backgroundColor: bucketColor }}
-        onPress={addTransaction}
-      >
-        <Text className="text-white">Add</Text>
-      </Pressable>
-      <Text className="text-red-500">{mutationResult?.errorMessage}</Text>
-    </View>
+    <LoadingWrapper isLoading={isLoading} error={error}>
+      <View className="p-4 border-t border-gray-200, gap-y-4">
+        <Stack.Screen
+          options={{
+            title: "Add Transaction",
+            headerShown: true,
+            headerStyle: { backgroundColor: bucketColor },
+          }}
+        />
+        <ExpenseOrIncomeSelector selectedType={type} onSelect={setType} />
+        <FormTextInput
+          placeholder="Amount"
+          value={amount}
+          onChangeText={setAmount}
+          keyboardType="numeric"
+          label="Amount"
+          autoFocus
+          hasValidationError={mutationResult?.errorField === "amount"}
+        />
+        <FormTextInput
+          placeholder="Description"
+          value={title}
+          onChangeText={setTitle}
+          label="Description"
+          hasValidationError={mutationResult?.errorField === "title"}
+        />
+        <Pressable
+          className=" p-2 rounded-md justify-center items-center"
+          style={{ backgroundColor: bucketColor }}
+          onPress={addTransaction}
+        >
+          <Text className="text-white">Add</Text>
+        </Pressable>
+        <Text className="text-red-500">{mutationResult?.errorMessage}</Text>
+      </View>
+    </LoadingWrapper>
   );
 }
 

@@ -1,3 +1,4 @@
+import { TransactionResult } from "@instantdb/core";
 import { db, id } from "./index";
 import { useLocalContext } from "./store";
 
@@ -5,6 +6,7 @@ export type MutationResult = {
   success: boolean;
   errorField?: string;
   errorMessage?: string;
+  mutationResult?: TransactionResult | undefined; // TODO: maybe return transaction result, but it's async
 }
 
 export const useCreateBucketMutation = () => {
