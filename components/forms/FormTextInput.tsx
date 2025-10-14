@@ -7,6 +7,7 @@ export function FormTextInput({
   placeholder,
   keyboardType,
   autoFocus,
+  hasValidationError,
 }: {
   label: string;
   value: string;
@@ -14,10 +15,11 @@ export function FormTextInput({
   placeholder?: string;
   keyboardType?: "default" | "numeric";
   autoFocus?: boolean;
+  hasValidationError?: boolean;
 }) {
   return (
     <TextInput
-      className="border border-gray-300 rounded p-2"
+      className={`border border-gray-300 rounded p-2 ${hasValidationError ? "border-red-500" : ""}`}
       placeholder={placeholder}
       value={value}
       onChangeText={onChangeText}

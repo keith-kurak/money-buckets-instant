@@ -1,12 +1,17 @@
+import { FormTextInput } from "@/components/forms/FormTextInput";
 import colors from "@/constants/colors";
 import { db } from "@/db";
-import { useCreateTransactionMutation, useDeleteTransactionMutation } from "@/db/mutations";
+import {
+  MutationResult,
+  useCreateTransactionMutation,
+  useDeleteTransactionMutation,
+} from "@/db/mutations";
 import { useTransactionQuery } from "@/db/queries";
 import { formatCurrency } from "@/lib/utils";
 import classNames from "classnames";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
-import { Pressable, Text, TextInput, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 export default function AddOrEditTransactionScreen() {
   const { transactionId } = useLocalSearchParams();
@@ -24,6 +29,9 @@ function AddTransactionScreen() {
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [type, setType] = useState<"expense" | "income">("expense");
+  const [mutationResult, setMutationResult] = useState<MutationResult | null>(
+    null
+  );
 
   const { bucketId } = useLocalSearchParams();
   const router = useRouter();
@@ -38,14 +46,19 @@ function AddTransactionScreen() {
 
   const bucketColor = data?.buckets?.[0]?.color || colors.tint;
 
-  const { createTransaction } = useCreateTransactionMutation();
+  const { createTransactionWithValidation } = useCreateTransactionMutation();
 
   const addTransaction = () => {
-    createTransaction(
+    const result = createTransactionWithValidation(
       title,
-      parseFloat(amount) * (type === "expense" ? -1 : 1),
+      amount,
+      type,
       bucketId as string
     );
+    setMutationResult(result);
+    if (!result.success) {
+      return;
+    }
 
     setTitle("");
     setAmount("");
@@ -63,19 +76,21 @@ function AddTransactionScreen() {
         }}
       />
       <ExpenseOrIncomeSelector selectedType={type} onSelect={setType} />
-      <TextInput
-        className="border border-gray-300 rounded p-2"
+      <FormTextInput
         placeholder="Amount"
         value={amount}
         onChangeText={setAmount}
         keyboardType="numeric"
-        autoFocus={true}
+        label="Amount"
+        autoFocus
+        hasValidationError={mutationResult?.errorField === "amount"}
       />
-      <TextInput
-        className="border border-gray-300 rounded p-2"
+      <FormTextInput
         placeholder="Description"
         value={title}
         onChangeText={setTitle}
+        label="Description"
+        hasValidationError={mutationResult?.errorField === "title"}
       />
       <Pressable
         className=" p-2 rounded-md justify-center items-center"
@@ -84,6 +99,7 @@ function AddTransactionScreen() {
       >
         <Text className="text-white">Add</Text>
       </Pressable>
+      <Text className="text-red-500">{mutationResult?.errorMessage}</Text>
     </View>
   );
 }
@@ -150,12 +166,12 @@ function EditTransactionScreen(props: { transactionId: string }) {
           headerStyle: { backgroundColor: bucketColor },
         }}
       />
-      <Text
-        className="border border-gray-300 rounded p-2"
-      >{transaction?.title}</Text>
-      <Text
-        className="border border-gray-300 rounded p-2"
-      >{formatCurrency(transaction?.amount || 0)}</Text>
+      <Text className="border border-gray-300 rounded p-2">
+        {transaction?.title}
+      </Text>
+      <Text className="border border-gray-300 rounded p-2">
+        {formatCurrency(transaction?.amount || 0)}
+      </Text>
       <Pressable
         className=" p-2 rounded-md justify-center items-center bg-red-700"
         onPress={onPressDelete}

@@ -54,7 +54,7 @@ export default function Transactions() {
         ListHeaderComponent={() => (
           <View className="py-4 px-4 justify-center items-center">
             <Text
-              className="text-4xl font-bold "
+              className="text-5xl font-bold"
               style={{ color: bucketColor }}
             >
               {formatCurrency(bucketBalance)}
