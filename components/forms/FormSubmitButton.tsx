@@ -6,10 +6,11 @@ export function FormSubmitButton(props: {
   isLoading: boolean;
   onPress?: () => void;
   color?: string;
+  className?: string;
 }) {
   return (
     <Pressable
-      className=" p-2 rounded-md justify-center items-center"
+      className={`p-2 rounded-md justify-center items-center ${props.className}`}
       style={{ backgroundColor: props.color || colors.tint }}
       onPress={props.onPress}
     >

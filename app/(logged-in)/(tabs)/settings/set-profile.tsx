@@ -1,7 +1,9 @@
+import { FormSubmitButton } from "@/components/forms/FormSubmitButton";
 import { ListItemSeparator } from "@/components/ListItemSeparator";
 import colors from "@/constants/colors";
 import { useProfilesQuery } from "@/db/queries";
 import { useLocalContext } from "@/db/store";
+import { AntDesign } from "@expo/vector-icons";
 import classNames from "classnames";
 import { Stack } from "expo-router";
 import { FlatList, Pressable, Text, View } from "react-native";
@@ -9,7 +11,8 @@ import { FlatList, Pressable, Text, View } from "react-native";
 export default function SetProfileScreen() {
   const { data, isLoading, error } = useProfilesQuery();
 
-  const { currentProfileId, setCurrentProfileId } = useLocalContext();
+  const { currentProfileId, setCurrentProfileId, clearCurrentProfileId } =
+    useLocalContext();
 
   return (
     <>
@@ -31,6 +34,18 @@ export default function SetProfileScreen() {
           />
         )}
         ItemSeparatorComponent={() => <ListItemSeparator />}
+        ListFooterComponent={() =>
+          currentProfileId ? (
+            <FormSubmitButton
+              className="m-4 w-auto"
+              isLoading={false}
+              title="Unset Profile"
+              onPress={() => {
+                clearCurrentProfileId();
+              }}
+            />
+          ) : null
+        }
       />
     </>
   );
@@ -43,18 +58,13 @@ function ProfileItem(props: {
 }) {
   return (
     <Pressable onPress={props.onPress}>
-      <View
-        className={classNames("p-4 flex-row justify-between items-center", {
-          "bg-tint": props.isSelected,
-        })}
-      >
-        <Text
-          className={classNames("text-lg font-semibold", {
-            "color-white": props.isSelected,
-          })}
-        >
+      <View className={classNames("p-4 flex-row justify-between items-center")}>
+        <Text className={classNames("text-lg font-semibold")}>
           {props.profile.name}
         </Text>
+        {props.isSelected && (
+          <AntDesign name="check" size={24} color={colors.tint} />
+        )}
       </View>
     </Pressable>
   );

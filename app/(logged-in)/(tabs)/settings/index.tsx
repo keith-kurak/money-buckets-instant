@@ -50,6 +50,7 @@ export default function Settings() {
     },
     {
       title: "Profiles",
+      help: "Profiles let you share your budget, identifying who made which changes, and customizing the experience for each user.",
       data: [
         <LabelValueCell
           key="profile"
@@ -96,6 +97,11 @@ export default function Settings() {
             <Text className="text-gray-500">{title}</Text>
           </View>
         )}
+        renderSectionFooter={({ section: { help }}) => help ? (
+          <View className="px-4 py-2">
+            <Text className="text-sm text-gray-500">{help}</Text>
+          </View>
+        ) : null}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => item}
       />
