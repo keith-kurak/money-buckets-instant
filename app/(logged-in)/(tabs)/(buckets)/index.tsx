@@ -1,3 +1,4 @@
+import { EmptyListPlaceholder } from "@/components/EmptyListPlaceholder";
 import { IconHeaderButton } from "@/components/IconHeaderButton";
 import { ListItemSeparator } from "@/components/ListItemSeparator";
 import { LoadingWrapper } from "@/components/LoadingWrapper";
@@ -48,6 +49,7 @@ export default function Index() {
       />
       <LoadingWrapper isLoading={isLoading} error={error}>
         <FlatList
+          contentContainerClassName="flex-1"
           data={data?.buckets || []}
           renderItem={({ item }) => (
             <BucketView
@@ -56,6 +58,7 @@ export default function Index() {
             />
           )}
           ItemSeparatorComponent={() => <ListItemSeparator />}
+          ListEmptyComponent={<EmptyListPlaceholder text="Add a new bucket to get started tracking!" />}
         />
       </LoadingWrapper>
     </>

@@ -1,3 +1,4 @@
+import { EmptyListPlaceholder } from "@/components/EmptyListPlaceholder";
 import { IconHeaderButton } from "@/components/IconHeaderButton";
 import { ListItemSeparator } from "@/components/ListItemSeparator";
 import { LoadingWrapper } from "@/components/LoadingWrapper";
@@ -44,8 +45,8 @@ export default function Transactions() {
       />
       <LoadingWrapper isLoading={isLoading} error={error}>
         <FlatList
+          contentContainerClassName="flex-1"
           data={myData}
-          contentContainerClassName=""
           renderItem={({ item }) => (
             <TransactionView transaction={item} bucketId={bucketId as string} />
           )}
@@ -60,6 +61,7 @@ export default function Transactions() {
               </Text>
             </View>
           )}
+          ListEmptyComponent={<EmptyListPlaceholder text="No transactions yet. Tap the + button to add one!" />}
         />
       </LoadingWrapper>
     </>

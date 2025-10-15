@@ -1,13 +1,12 @@
 import { FormTextInput } from "@/components/forms/FormTextInput";
 import { LoadingWrapper } from "@/components/LoadingWrapper";
 import colors from "@/constants/colors";
-import { db } from "@/db";
 import {
   MutationResult,
   useCreateTransactionMutation,
   useDeleteTransactionMutation,
 } from "@/db/mutations";
-import { useTransactionQuery } from "@/db/queries";
+import { useBucketQuery, useTransactionQuery } from "@/db/queries";
 import { formatCurrency } from "@/lib/utils";
 import classNames from "classnames";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
@@ -37,15 +36,9 @@ function AddTransactionScreen() {
   const { bucketId } = useLocalSearchParams();
   const router = useRouter();
 
-  const query = {
-    buckets: {
-      $: { where: { id: bucketId as string } },
-    },
-  };
+  const { bucket, isLoading, error } = useBucketQuery(bucketId as string)
 
-  const { data, isLoading, error } = db.useQuery(query);
-
-  const bucketColor = data?.buckets?.[0]?.color || colors.tint;
+  const bucketColor = bucket?.color || colors.tint;
 
   const { createTransactionWithValidation } = useCreateTransactionMutation();
 

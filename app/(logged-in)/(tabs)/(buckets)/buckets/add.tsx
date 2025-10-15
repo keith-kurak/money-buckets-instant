@@ -6,7 +6,7 @@ import { Pressable, Text, TextInput, View } from "react-native";
 export default function AddBucketScreen() {
   const [title, setTitle] = useState("");
   const [startingBalance, setStartingBalance] = useState("");
-  const [selectedColor, setSelectedColor] = useState("#F44336");
+  const [selectedColor, setSelectedColor] = useState("#9E9E9E");
   const { createBucket } = useCreateBucketMutation();
 
   const myCreateBucket = () => {
@@ -37,6 +37,7 @@ export default function AddBucketScreen() {
         />
         <View className="flex-row mt-4 justify-between">
           {[
+            "#9E9E9E", // gray
             "#E91E63",
             "#9C27B0",
             "#3F51B5",
@@ -65,7 +66,7 @@ export default function AddBucketScreen() {
           ))}
         </View>
         <Pressable
-          className="bg-blue-500 p-2 rounded-md justify-center items-center mt-4"
+          className="bg-tint p-2 rounded-md justify-center items-center mt-4"
           onPress={myCreateBucket}
         >
           <Text className="text-white">Create Bucket</Text>

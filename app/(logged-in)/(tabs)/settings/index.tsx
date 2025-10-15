@@ -11,6 +11,8 @@ import { Pressable, SectionList, Text, View } from "react-native";
 export default function Settings() {
   const { isLoading, group, error } = useCurrentGroupQuery();
 
+  const status = db.useConnectionStatus();
+
   const router = useRouter();
 
   const { profile } = useCurrentProfileQuery();
@@ -108,6 +110,11 @@ export default function Settings() {
               </View>
             ) : null
           }
+          ListFooterComponent={() => (
+            <View className="px-4 py-4 items-center">
+              <Text className="text-sm text-gray-500">{status}</Text>
+            </View>
+          )}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => item}
         />
