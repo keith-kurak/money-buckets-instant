@@ -1,23 +1,15 @@
 import colors from "@/constants/colors";
-import { useCreateBucketMutation } from "@/db/mutations";
-import { router, Stack } from "expo-router";
+import { useBucketQuery } from "@/db/queries";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 
-export default function AddBucketScreen() {
+export default function BucketSettingsScreen() {
   const [title, setTitle] = useState("");
-  const [startingBalance, setStartingBalance] = useState("");
-  const [selectedColor, setSelectedColor] = useState("#9E9E9E");
-  const { createBucket } = useCreateBucketMutation();
-
-  const myCreateBucket = () => {
-    createBucket(
-      title,
-      selectedColor,
-      startingBalance ? parseFloat(startingBalance) : undefined
-    );
-    router.back();
-  };
+  const { bucketId } = useLocalSearchParams();
+  const [selectedColor, setSelectedColor] = useState(colors.bucketColorOptions[0]);
+  const { bucket } = useBucketQuery(bucketId as string);
+  const { updateBucket } = useUpdateBucketMutation();
 
   return (
     <>
@@ -29,12 +21,6 @@ export default function AddBucketScreen() {
           value={title}
           onChangeText={setTitle}
           autoFocus={true}
-        />
-        <TextInput
-          className="border border-gray-300 rounded p-2 mr-2"
-          placeholder="Starting Balance"
-          value={startingBalance}
-          onChangeText={setStartingBalance}
         />
         <View className="flex-row mt-4 justify-between">
           {colors.bucketColorOptions.map((color, idx) => (
@@ -57,9 +43,9 @@ export default function AddBucketScreen() {
         </View>
         <Pressable
           className="bg-tint p-2 rounded-md justify-center items-center mt-4"
-          onPress={myCreateBucket}
+          onPress={myUpdateBucket}
         >
-          <Text className="text-white">Create Bucket</Text>
+          <Text className="text-white">Save</Text>
         </Pressable>
       </View>
     </>

@@ -1,4 +1,5 @@
 import { EmptyListPlaceholder } from "@/components/EmptyListPlaceholder";
+import FloatingButton from "@/components/FloatingButton";
 import { IconHeaderButton } from "@/components/IconHeaderButton";
 import { ListItemSeparator } from "@/components/ListItemSeparator";
 import { LoadingWrapper } from "@/components/LoadingWrapper";
@@ -35,7 +36,7 @@ export default function Transactions() {
           headerShown: true,
           headerRight: () => (
             <IconHeaderButton
-              icon="plus"
+              icon="settings"
               onPress={() => {
                 router.navigate(`/buckets/${bucketId}/add`);
               }}
@@ -62,6 +63,13 @@ export default function Transactions() {
             </View>
           )}
           ListEmptyComponent={<EmptyListPlaceholder text="No transactions yet. Tap the + button to add one!" />}
+        />
+        <FloatingButton
+          iconName="plus"
+          onPress={() => {
+            router.navigate(`/buckets/${bucketId}/add`);
+          }}
+          color={bucketColor}
         />
       </LoadingWrapper>
     </>
